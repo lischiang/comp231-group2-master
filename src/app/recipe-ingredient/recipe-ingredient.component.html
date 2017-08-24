@@ -1,0 +1,98 @@
+<h4>Recipe Ingredients</h4>
+<form [formGroup]="recipeIngredientForm" novalidate>
+  <span>
+    <label>Ingredient: </label>
+    <select name="ingredient" placeholder="Igredient" [(ngModel)]="selectedIngredient"
+            formControlName="ingredientFormControl" #formIngredient  >
+      <option  *ngFor="let ingredient of ingredients"
+               [ngValue]="ingredient">
+        {{ ingredient.name }}
+      </option>
+    </select>
+  </span>
+  <span>
+    <label>Quantity: </label>
+      <input name="quantity" placeholder="Quantity" [(ngModel)]="quantity"
+             formControlName="quantityFormControl" type="number" min="1" #formquantity>
+  </span>
+
+  <span>
+    <label>Unit: </label>
+    <select placeholder="Unit" [(ngModel)]="selectedUnit" formControlName="unitFormControl" #formUnit >
+      <option  *ngFor="let unit of units" [ngValue]="unit"
+              ngDefaultControl>
+        {{unit.unit}}
+      </option>
+    </select>
+
+    <button md-raised-button (click)="addIngredient()" [disabled]="!recipeIngredientForm.valid">
+      Add Ingredient
+    </button>
+  </span>
+  <div *ngIf="(!recipeIngredientForm.pristine || recipeIngredientForm.touched) && recipeIngredientForm.invalid" style="color:red">
+    <div *ngIf="recipeIngredientForm.controls.ingredientFormControl.errors?.required">Ingredient is mandatory</div>
+    <div *ngIf="recipeIngredientForm.controls.quantityFormControl.errors?.required">Quantity is mandatory</div>
+    <div *ngIf="recipeIngredientForm.controls.quantityFormControl.errors?.gt">Quantity should be greater than zero.</div>
+    <div *ngIf="recipeIngredientForm.controls.unitFormControl.errors?.required">Unit is mandatory</div>
+  </div>
+
+
+
+  <div >
+    <md-table #table [dataSource]="dataSource">
+
+      <!--- Note that these columns can be defined in any order.
+            The actual rendered columns are set as a property on the row definition" -->
+
+      <!-- Ingredient ID Column -->
+      <ng-container cdkColumnDef="ingredientId">
+        <md-header-cell *cdkHeaderCellDef> ID </md-header-cell>
+        <md-cell *cdkCellDef="let recipeIngredient"> {{recipeIngredient.ingredient._id}} </md-cell>
+      </ng-container>
+
+      <!-- Ingredient Name Column -->
+      <ng-container cdkColumnDef="ingredientName">
+        <md-header-cell *cdkHeaderCellDef> Ingredient </md-header-cell>
+        <md-cell *cdkCellDef="let recipeIngredient"> {{recipeIngredient.ingredient.name}} </md-cell>
+      </ng-container>
+
+      <!-- Quantity Column -->
+      <ng-container cdkColumnDef="quantity">
+        <md-header-cell *cdkHeaderCellDef> Quantity </md-header-cell>
+        <md-cell *cdkCellDef="let recipeIngredient"> {{recipeIngredient.quantity}} </md-cell>
+      </ng-container>
+
+      <!-- Unit ID Column -->
+      <ng-container cdkColumnDef="unitId">
+        <md-header-cell *cdkHeaderCellDef>Unit ID</md-header-cell>
+        <md-cell *cdkCellDef="let recipeIngredient" > {{recipeIngredient.unit._id}} </md-cell>
+      </ng-container>
+
+      <!-- Unit description Column -->
+      <ng-container cdkColumnDef="unit">
+        <md-header-cell *cdkHeaderCellDef>Unit</md-header-cell>
+        <md-cell *cdkCellDef="let recipeIngredient" > {{recipeIngredient.unit.unit}} </md-cell>
+      </ng-container>
+
+      <!-- Edit Button Column -->
+      <ng-container cdkColumnDef="edit">
+        <md-header-cell *cdkHeaderCellDef></md-header-cell>
+        <md-cell *cdkCellDef="let recipeIngredient" >
+          <button md-raised-button (click)="editIngredient(recipeIngredient)" >Edit</button>
+        </md-cell>
+      </ng-container>
+
+      <!-- Delete Button Column -->
+      <ng-container cdkColumnDef="delete">
+        <md-header-cell *cdkHeaderCellDef></md-header-cell>
+        <md-cell *cdkCellDef="let recipeIngredient" >
+          <button md-raised-button (click)="removeIngredient(recipeIngredient)" >Delete</button>
+        </md-cell>
+      </ng-container>
+
+      <md-header-row *cdkHeaderRowDef="displayedColumns"></md-header-row>
+      <md-row *cdkRowDef="let recipeIngredient; columns: displayedColumns;"></md-row>
+    </md-table>
+  </div>
+
+</form>
